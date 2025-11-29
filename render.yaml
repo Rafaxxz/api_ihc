@@ -1,0 +1,31 @@
+# Configuración para Render
+# Este archivo le dice a Render cómo construir y ejecutar tu aplicación
+
+# Tipo de servicio
+services:
+  - type: web
+    name: camino-seguro-api
+    env: node
+    region: oregon # o la región que prefieras
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true # Render generará un valor aleatorio
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: DATABASE_URL
+        fromDatabase:
+          name: camino-seguro-db
+          property: connectionString
+
+databases:
+  - name: camino-seguro-db
+    databaseName: camino_seguro
+    user: camino_user
+    region: oregon
+    plan: free
