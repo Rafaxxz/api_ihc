@@ -19,12 +19,33 @@ const { initDatabase } = require('./config/database');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
+// Middleware CORS - Permitir múltiples orígenes
+const allowedOrigins = [
+  'https://rafaxxz.github.io',
+  'http://localhost:3000',
+  'http://localhost:5500',
+  'http://127.0.0.1:5500',
+  'http://localhost:8080'
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: function(origin, callback) {
+    // Permitir requests sin origin (como mobile apps o curl)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+      callback(null, true);
+    } else {
+      callback(null, true); // Permitir todos en producción por ahora
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  credentials: true
 }));
+
+// Manejar preflight requests
+app.options('*', cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
