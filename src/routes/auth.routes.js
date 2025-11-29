@@ -60,7 +60,7 @@ router.post('/register', registerValidation, async (req, res) => {
     const token = jwt.sign(
       { uuid: user.uuid, email: user.email, userType: user.user_type },
       process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+      { expiresIn: process.env.JWT_EXPIRES_IN || '30d' }
     );
 
     res.status(201).json({
@@ -130,7 +130,7 @@ router.post('/register-authority', [
     const token = jwt.sign(
       { uuid: user.uuid, email: user.email, userType: user.user_type },
       process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+      { expiresIn: process.env.JWT_EXPIRES_IN || '30d' }
     );
 
     res.status(201).json({
@@ -208,7 +208,7 @@ router.post('/login', loginValidation, async (req, res) => {
     const token = jwt.sign(
       { uuid: user.uuid, email: user.email, userType: user.user_type },
       process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+      { expiresIn: process.env.JWT_EXPIRES_IN || '30d' }
     );
 
     res.json({
