@@ -170,6 +170,26 @@ const initDatabase = async () => {
       )
     `);
 
+    // Tabla de patrullajes
+    await query(`
+      CREATE TABLE IF NOT EXISTS patrols (
+        id SERIAL PRIMARY KEY,
+        uuid VARCHAR(36) UNIQUE NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        patrol_type VARCHAR(50) NOT NULL CHECK (patrol_type IN ('rutinario', 'especial', 'emergencia', 'preventivo')),
+        resources JSONB NOT NULL,
+        scheduled_at TIMESTAMP NOT NULL,
+        duration INTEGER DEFAULT 2 CHECK (duration >= 1 AND duration <= 12),
+        status VARCHAR(20) DEFAULT 'scheduled' CHECK (status IN ('scheduled', 'in_progress', 'completed', 'cancelled')),
+        latitude DECIMAL(10, 8),
+        longitude DECIMAL(11, 8),
+        notes TEXT,
+        created_by INTEGER REFERENCES users(id),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
     // Índices para mejorar el rendimiento
     await query(`CREATE INDEX IF NOT EXISTS idx_reports_location ON reports(latitude, longitude)`);
     await query(`CREATE INDEX IF NOT EXISTS idx_reports_status ON reports(status)`);
@@ -178,6 +198,8 @@ const initDatabase = async () => {
     await query(`CREATE INDEX IF NOT EXISTS idx_alerts_active ON alerts(is_active)`);
     await query(`CREATE INDEX IF NOT EXISTS idx_heat_zones_location ON heat_zones(latitude, longitude)`);
     await query(`CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id, is_read)`);
+    await query(`CREATE INDEX IF NOT EXISTS idx_patrols_status ON patrols(status)`);
+    await query(`CREATE INDEX IF NOT EXISTS idx_patrols_scheduled ON patrols(scheduled_at)`);
 
     console.log('✅ Tablas de la base de datos inicializadas correctamente');
   } catch (error) {

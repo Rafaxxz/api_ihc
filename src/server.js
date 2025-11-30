@@ -12,6 +12,7 @@ const routeRoutes = require('./routes/route.routes');
 const alertRoutes = require('./routes/alert.routes');
 const heatmapRoutes = require('./routes/heatmap.routes');
 const statsRoutes = require('./routes/stats.routes');
+const patrolRoutes = require('./routes/patrol.routes');
 
 // Importar base de datos
 const { initDatabase } = require('./config/database');
@@ -73,7 +74,8 @@ app.get('/', (req, res) => {
       routes: '/api/routes',
       alerts: '/api/alerts',
       heatmap: '/api/heatmap',
-      stats: '/api/stats'
+      stats: '/api/stats',
+      patrols: '/api/patrols'
     }
   });
 });
@@ -87,6 +89,7 @@ app.use('/api/routes', routeRoutes);
 app.use('/api/alerts', alertRoutes);
 app.use('/api/heatmap', heatmapRoutes);
 app.use('/api/stats', statsRoutes);
+app.use('/api/patrols', patrolRoutes);
 
 // Manejo de errores 404
 app.use((req, res) => {
